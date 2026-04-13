@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
-import seaborn as sns
 
 # Assuming df is already loaded in the Colab environment.
 # For a standalone Streamlit app, you would load the data directly here.
