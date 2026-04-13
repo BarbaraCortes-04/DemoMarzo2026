@@ -4,3 +4,4 @@ seaborn
 openpyxl
 streamlit
 datetime
+plotly.express
