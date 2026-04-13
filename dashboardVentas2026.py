@@ -3,7 +3,7 @@ import pandas as pd
 import plotly.express as px
 
 # Load the data from the saved Excel file path
-file_path = 'DATOS/SalidaVentas.xlsx'
+file_path = 'datos/SalidaVentas.xlsx'
 df = pd.read_excel(file_path)
 
 st.set_page_config(layout='wide')
