@@ -3,10 +3,11 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 from datetime import datetime # Import datetime for date operations
+import plotly.express as px # Import plotly express for maps
 
 # It's better to load the data directly within the Streamlit script for portability
 try:
-    df = pd.read_excel('datos/SalidaVentas.xlsx')
+    df = pd.read_excel('/content/drive/MyDrive/Documentos/SalidaVentas.xlsx')
 except FileNotFoundError:
     st.error("Error: 'SalidaVentas.xlsx' not found. Please ensure the file is in the specified path.")
     st.stop()
@@ -20,7 +21,7 @@ st.title('Sales Dashboard for USA Branches')
 
 st.markdown("--- ")
 
-# --- Date Filtering --- (Added)
+# --- Date Filtering ---
 st.sidebar.header('Filter Options')
 min_date = df['Order Date'].min().date()
 max_date = df['Order Date'].max().date()
@@ -56,12 +57,11 @@ with col3:
 
 st.markdown("--- ")
 
-# --- Monthly Sales Trend (Added) ---
+# --- Monthly Sales Trend ---
 st.header('Monthly Sales Trend')
 
 # Extract Year and Month for monthly analysis
-# Create 'YearMonth' directly on filtered_df for plotting, then drop it if not needed later.
-monthly_sales_df = filtered_df.copy() # Avoid SettingWithCopyWarning
+monthly_sales_df = filtered_df.copy()
 monthly_sales_df['YearMonth'] = monthly_sales_df['Order Date'].dt.to_period('M').astype(str)
 monthly_sales = monthly_sales_df.groupby('YearMonth')['Sales'].sum().reset_index()
 monthly_sales['YearMonth'] = pd.to_datetime(monthly_sales['YearMonth']) # Convert back to datetime for proper sorting/plotting
@@ -103,3 +103,39 @@ ax2.set_xlabel('Region')
 ax2.set_ylabel('Total Profit')
 ax2.ticklabel_format(style='plain', axis='y') # Prevent scientific notation
 st.pyplot(fig2)
+
+st.markdown("--- ")
+
+# --- Top Products by Sales ---
+st.header('Top Products by Sales')
+
+num_top_products = st.sidebar.slider('Number of Top Products', min_value=5, max_value=20, value=10)
+
+top_products = filtered_df.groupby('Product Name')['Sales'].sum().nlargest(num_top_products).reset_index()
+
+fig_products, ax_products = plt.subplots(figsize=(12, 8))
+sns.barplot(x='Sales', y='Product Name', data=top_products, palette='rocket', ax=ax_products)
+ax_products.set_title(f'Top {num_top_products} Products by Sales')
+ax_products.set_xlabel('Total Sales')
+ax_products.set_ylabel('Product Name')
+ax_products.ticklabel_format(style='plain', axis='x') # Prevent scientific notation
+st.pyplot(fig_products)
+
+st.markdown("--- ")
+
+# --- Sales by State Map (Added) ---
+st.header('Sales by State (USA Map)')
+
+sales_by_state = filtered_df.groupby('State')['Sales'].sum().reset_index()
+
+fig_map = px.choropleth(
+    sales_by_state,
+    locations='State',
+    locationmode='USA-states',
+    color='Sales',
+    color_continuous_scale='Viridis',
+    scope='usa',
+    title='Total Sales by State'
+)
+fig_map.update_layout(margin={"r":0,"t":50,"l":0,"b":0})
+st.plotly_chart(fig_map)
