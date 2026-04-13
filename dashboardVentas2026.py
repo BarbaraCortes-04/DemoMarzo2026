@@ -7,7 +7,7 @@ import plotly.express as px # Import plotly express for maps
 
 # It's better to load the data directly within the Streamlit script for portability
 try:
-    df = pd.read_excel('/content/drive/MyDrive/Documentos/SalidaVentas.xlsx')
+    df = pd.read_excel('datos/SalidaVentas.xlsx')
 except FileNotFoundError:
     st.error("Error: 'SalidaVentas.xlsx' not found. Please ensure the file is in the specified path.")
     st.stop()
