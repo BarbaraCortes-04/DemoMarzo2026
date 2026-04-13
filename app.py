@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import plotly.express as px
 
-st.title('Mi Aplicación Streamlit con DataFrame y Gráfica de Línea')
+st.title('Mi Aplicación Streamlit con DataFrame y Gráfica de Línea Bárbara Cortés')
 
 # 1. Crear un DataFrame de ejemplo
 st.header('DataFrame de Ejemplo')
